@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import Board from './Components';
+import Gomoku from './Gomoku';
 
 const steps = []
 
@@ -35,14 +35,12 @@ export default function App() {
       }
     }
 
-    console.log(!currentHandIsBlack ? "black" : "white", currentRow, currentColumn, directionRow, directionColumn, count);
     return count
   }
 
-  const isGameOver = (steps, color) => {
+  const isGameOver = (steps) => {
     if (steps.length === 0) return;
     const [row, column] = steps[steps.length - 1]
-    console.log("最後一手", color, row, column);
 
     if (
       countPieces(row, column, 1, 0) + countPieces(row, column, -1, 0) >= 4 ||
@@ -60,11 +58,13 @@ export default function App() {
     if (gameIsOver) return;
     const [row, column] = [block.getAttribute('row'), block.getAttribute('column')]
 
+    // 設定
     if (row === null || column === null || map[row][column]) return;
     steps.push([Number(row), Number(column)])
 
     setMap(map.map((boardRow, index) => {
       if (index !== Number(row)) return boardRow;
+
       // 找到要更新的 row, 用 map 回傳一個陣列
       return boardRow.map((value, index) => {
         if (value) return value
@@ -83,12 +83,14 @@ export default function App() {
   useEffect(() => {
     if (steps.length === 0) return
 
-    let color = !currentHandIsBlack ? "black" : "white";
-    if (isGameOver(steps, color)) {
+    let color = !currentHandIsBlack ? "Black" : "White";
+    if (isGameOver(steps)) {
       gameIsOver = true;
       alert(`${color} is winner`)
     }
   })
 
-  return <Board map={map} handleClick={handleClick} next={currentHandIsBlack ? '0' : '0'} />
+  return (
+    <Gomoku map={map} handleClick={handleClick} />
+  )
 }
