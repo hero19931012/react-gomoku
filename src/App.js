@@ -90,6 +90,10 @@ export default function App() {
     }
   })
 
+  useEffect(() => {
+    document.title = 'React Gomoku'
+  }, [])
+
   return (
     <Gomoku map={map} handleClick={handleClick} />
   )
